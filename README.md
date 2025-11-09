@@ -50,8 +50,11 @@ To get overview of all the created resources
 kubectl get all
 ```
 
+<img width="1039" height="352" alt="image" src="https://github.com/user-attachments/assets/e07dc133-c1a5-4592-914d-7b327bd8c704" />
+
+
 ## Kubernetes Resources
-This project uses several YAML manifests in the `k8sresources/` directory to define the desired state of the application and its supporting components.
+This project uses several YAML manifests in the `k8resources/` directory to define the desired state of the application and its supporting components.
 
 ### configmap.yaml
 **Purpose:** Decouples configuration from the application code.  

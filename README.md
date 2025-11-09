@@ -5,7 +5,7 @@ This project provides a hands-on demonstration of deploying a containerized Pyth
 
 The primary goal is to establish a foundational understanding of how Kubernetes resources like Deployments, Services, and ConfigMaps work together to run and expose an application, preparing for future integrations like monitoring and CI/CD.
 
----
+
 
 ## Key Features
 
@@ -17,7 +17,7 @@ The primary goal is to establish a foundational understanding of how Kubernetes 
 - **External Access:**  Uses Ingress (for Layer 7 routing) and NodePort (for Layer 4 access) to expose the application for testing and external traffic.
 - **Local Cluster:**  Utilizes Minikube to simulate a complete, self-contained Kubernetes environment for local development and experimentation.
 
----
+
 
 ## Gettting Started
 
@@ -53,6 +53,7 @@ kubectl get all
 <img width="1039" height="352" alt="image" src="https://github.com/user-attachments/assets/e07dc133-c1a5-4592-914d-7b327bd8c704" />
 
 
+
 ## Kubernetes Resources
 This project uses several YAML manifests in the `k8resources/` directory to define the desired state of the application and its supporting components.
 
@@ -81,7 +82,7 @@ This project uses several YAML manifests in the `k8resources/` directory to defi
     * Requires an Ingress Controller (e.g., NGINX) to be running in the cluster.  
     * Optional for local testing but useful for production-like setups.
 
----
+
 
 ## Accessing the Application
 
@@ -104,8 +105,6 @@ http://localhost:8080/ready
 
 
 
----
-
 ## Output Check
 
 | Endpoint  | Description                    | Expected Output                         |
@@ -114,7 +113,7 @@ http://localhost:8080/ready
 | `/health` | Liveness check                 | `ok`                                    |
 | `/ready`  | Readiness check                | `ready`                                 |
 
----
+
 
 ## Key Takeaways
 This project demonstrates several core concepts of application management in Kubernetes:
@@ -128,7 +127,7 @@ This project demonstrates several core concepts of application management in Kub
       *Ingress* defines how to expose applications externally.
 - **Local Development:**  Leveraging Minikube to test, debug, and interact with a full Kubernetes cluster locally before moving to cloud-managed environments.
   
----
+
 
 ## What’s Next
 

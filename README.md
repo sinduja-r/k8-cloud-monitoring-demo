@@ -98,6 +98,11 @@ http://localhost:8080/
 http://localhost:8080/health
 http://localhost:8080/ready
 ```
+<img width="530" height="57" alt="image" src="https://github.com/user-attachments/assets/1904d43a-10ad-4c5e-821d-88dcab945df8" />
+<img width="593" height="49" alt="image" src="https://github.com/user-attachments/assets/465c02f4-5545-4759-9bc4-ced012e5d5d2" />
+<img width="573" height="46" alt="image" src="https://github.com/user-attachments/assets/811578eb-13e8-4e7d-8b86-c602c41e3c98" />
+
+
 
 ---
 

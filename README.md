@@ -238,7 +238,8 @@ Grafana dashboards were designed to visualize both cluster-wide health metrics a
 
 The following diagram summarizes the flow of the Kubernetes-based Flask application and the integrated monitoring stack using Prometheus and Grafana.
 
-<img width="1024" height="683" alt="image" src="https://github.com/user-attachments/assets/e8d36775-e4bf-42bf-9908-9be45cfd4257" />
+<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/3b30df62-7ba2-4451-ae11-ca1a30f50602" />
+
 
 
 ---

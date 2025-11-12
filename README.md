@@ -1,4 +1,4 @@
-# Kubernetes Deployment Demo for a Flask Application
+# Phase 1: Kubernetes Deployment Demo for a Flask Application
 
 ## Overview
 This project provides a hands-on demonstration of deploying a containerized Python Flask application onto a local Kubernetes cluster. Using Minikube, Docker, and kubectl, it illustrates core Kubernetes concepts for managing a web application.
@@ -137,3 +137,113 @@ This project demonstrates several core concepts of application management in Kub
 * **Cloud Deployment**: Adapt the configuration to run on a managed Kubernetes service (e.g., GKE, EKS, or AKS).
 
 
+---
+
+
+# Phase 2: Monitoring Enhancement (Prometheus + Grafana)
+
+
+### Objective
+Extend the existing Kubernetes deployment to include real-time application and cluster-level monitoring using **Prometheus** and **Grafana**.
+
+
+### New Components Added
+- **Helm CLI** – installed and used to deploy the *kube-prometheus-stack* (Prometheus + Grafana).
+- **ServiceMonitor** – defines how Prometheus discovers and scrapes the Flask service metrics.
+- **Prometheus Client Library** – added to the Flask app to expose custom metrics under `/metrics`.
+- **Grafana Dashboard** – visualizes both cluster and app-level metrics with real-time updates.
+
+
+
+### Implementation Steps
+
+1. **Update the application**
+   - Added `prometheus_client` to `requirements.txt`.  
+   - Modified `main.py` to expose a `/metrics` endpoint and a custom counter:
+     ```python
+     HOMEPAGE_HITS = Counter(
+         "flask_homepage_requests_total",
+         "Total homepage requests",
+         ["method"]
+     )
+     ```
+
+2. **Rebuild and redeploy the image**
+   ```bash
+   docker build -t flask-app:v3 .
+   minikube image load flask-app:v3
+   kubectl set image deployment/flask-deploy <container-name>=flask-app:v3
+   kubectl rollout status deployment/flask-deploy
+   ```
+   
+3. **Install Prometheus & Grafana via Helm**
+   ```bash
+   helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+   helm install kps prometheus-community/kube-prometheus-stack -n monitoring --create-namespace
+   ```
+   
+4. **Add ServiceMonitor manifest**
+- k8resources/servicemonitor.yaml configures Prometheus to scrape the Flask service automatically.
+- The Flask Service must have a matching label (e.g., release: kps) and a named port (http).
+
+5. **Access dashboards**
+   ```bash
+   # Prometheus
+   kubectl -n monitoring port-forward svc/kps-kube-prometheus-stack-prometheus 9091:9090
+
+   # Grafana
+   kubectl -n monitoring port-forward svc/kps-grafana 3000:80
+   ```
+   - Add a new panel → Data source = Prometheus
+   - Query example: sum by (method) (rate(flask_homepage_requests_total[1m]))
+
+
+
+### Cluster and Application-Level Metrics
+
+Once Prometheus and Grafana were connected, both **Kubernetes cluster metrics** and **custom application metrics** became visible in the Grafana dashboards.
+
+  - **Cluster Metrics (from kube-state-metrics):**  
+     Provides real-time visibility into node CPU usage, pod restarts, memory consumption, and overall cluster health.  
+     Example queries:
+     ```promql
+     node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes
+     kube_pod_status_phase
+     ```
+     <img width="1101" height="802" alt="pods up grafana" src="https://github.com/user-attachments/assets/f87680a8-7f25-4d6c-8137-04e98acb9b82" />
+
+  - **Application Metrics (from Flask /metrics):**
+   Captured runtime details directly from the app using the Prometheus client library.
+   For example, the custom counter flask_homepage_requests_total tracks how many times users accessed the homepage.
+   Example query for visualization:   
+   ```promql
+   sum by (method) (rate(flask_homepage_requests_total[1m]))
+   ```
+   <img width="1843" height="407" alt="Screenshot 2025-11-12 192912" src="https://github.com/user-attachments/assets/bb867176-571f-4d95-a27d-a074520b186b" />
+
+
+Grafana dashboards were designed to visualize both cluster-wide health metrics and application-level performance data, delivering a unified observability view that connects infrastructure behavior with application activity.
+
+
+
+### Key Takeaways
+
+- **End-to-End Observability:** Implements a full monitoring stack using Prometheus and Grafana, providing visibility into both cluster infrastructure and application performance.
+- **Custom Application Metrics:** Includes a sample Python (Flask) application instrumented to expose custom Prometheus metrics (e.g., `flask_homepage_requests_total`) via the `/metrics` endpoint.
+- **Dynamic Target Discovery:** Uses a Kubernetes `ServiceMonitor` to configure Prometheus to automatically discover and scrape the application's metrics.
+- **Infrastructure & App Monitoring:** Demonstrates how to monitor live Kubernetes events, such as pod scaling, restarts, and node resource utilization.
+- **Custom Dashboarding:** Features a custom-built Grafana dashboard that visualizes and correlates both application-specific metrics and Kubernetes cluster metrics for deep, actionable insights.
+
+### Architecture Overview
+
+The following diagram summarizes the flow of the Kubernetes-based Flask application and the integrated monitoring stack using Prometheus and Grafana.
+
+<img width="1024" height="683" alt="image" src="https://github.com/user-attachments/assets/e8d36775-e4bf-42bf-9908-9be45cfd4257" />
+
+
+---
+
+### Project Completion
+
+With Phase 2 complete, this project now demonstrates a full DevOps lifecycle, deploying a cloud-native Flask application on Kubernetes and monitoring it in real time with Prometheus and Grafana. 
+It brings together containerization, declarative infrastructure, and observability into one cohesive, production-style implementation.
